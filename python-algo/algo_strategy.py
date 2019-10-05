@@ -58,9 +58,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         #game_state.suppress_warnings(True)  #Comment or remove this line to enable warnings.
 
         self.starter_strategy_defense(game_state)
-        # While we have remaining bits to spend lets send out scramblers randomly.
-        while game_state.get_resource(game_state.BITS) >= 20:
-            self.attack_from_top_left(game_state, 20)
+        self.attack_strategy(game_state)
 
         game_state.submit_turn()
 
@@ -110,11 +108,33 @@ class AlgoStrategy(gamelib.AlgoCore):
 
 # -----------------------------------------------------------------------------------------------------------
 
+    # THIS IS THE MAIN METHOD FOR ALL ATTACKS
+    def attack_strategy(self, game_state):
+        self.send_in_scramblers(game_state)
+        while game_state.get_resource(game_state.BITS) >= 20:
+            self.attack_from_top_left(game_state, 20)
+
     # sends in attack from top left
     def attack_from_top_left(self, game_state, ping_count=1):
-
         for i in range(ping_count):
             game_state.attempt_spawn(PING, [3, 10])
+
+    # sends in scramblers to dispel opponent's attack
+    def send_in_scramblers(self, game_state):
+        enemy_bits = game_state.get_resource(game_state.BITS, 1)
+        if enemy_bits <= 5:
+            scrambler_count = 0
+        elif enemy_bits <= 10:
+            scrambler_count = 1
+        elif enemy_bits <= 15:
+            scrambler_count = 2
+        else:
+            scrambler_count = 3
+        for i in range(scrambler_count):
+            if i % 2 == 0:
+                game_state.attempt_spawn(SCRAMBLER, [3, 10])
+            else:
+                game_state.attempt_spawn(SCRAMBLER, [24, 10])
 
 
     # experiment
