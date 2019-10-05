@@ -58,6 +58,9 @@ class AlgoStrategy(gamelib.AlgoCore):
         #game_state.suppress_warnings(True)  #Comment or remove this line to enable warnings.
 
         self.starter_strategy_defense(game_state)
+        # While we have remaining bits to spend lets send out scramblers randomly.
+        while game_state.get_resource(game_state.BITS) >= 20:
+            self.attack_from_top_left(game_state, 20)
 
         game_state.submit_turn()
 
@@ -105,11 +108,13 @@ class AlgoStrategy(gamelib.AlgoCore):
                 game_state.attempt_spawn(ENCRYPTOR, encryptor_locations)
 
 
-
-
-
 # -----------------------------------------------------------------------------------------------------------
 
+    # sends in attack from top left
+    def attack_from_top_left(self, game_state, ping_count=1):
+
+        for i in range(ping_count):
+            game_state.attempt_spawn(PING, [3, 10])
 
 
     # experiment
