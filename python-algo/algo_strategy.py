@@ -158,6 +158,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         """
         Build a line of the cheapest stationary unit so our EMP's can attack from long range.
         """
+        # test
         # First let's figure out the cheapest unit
         # We could just check the game rules, but this demonstrates how to use the GameUnit class
         stationary_units = [FILTER, DESTRUCTOR, ENCRYPTOR]
