@@ -111,20 +111,22 @@ class AlgoStrategy(gamelib.AlgoCore):
     # THIS IS THE MAIN METHOD FOR ALL ATTACKS
     def attack_strategy(self, game_state):
         self.send_in_scramblers(game_state)
-        while game_state.get_resource(game_state.BITS) >= 20:
-            self.attack_from_top_left(game_state, 20)
+        if game_state.get_resource(game_state.BITS) >= 12:
+            self.attack_from_top_left(game_state, 12)
 
     # sends in attack from top left
     def attack_from_top_left(self, game_state, ping_count=1):
         for i in range(ping_count):
-            game_state.attempt_spawn(PING, [3, 10])
+            game_state.attempt_spawn(PING, [5, 8])
 
     # sends in scramblers to dispel opponent's attack
     def send_in_scramblers(self, game_state):
+        if game_state.turn_number <= 5:
+            return
         enemy_bits = game_state.get_resource(game_state.BITS, 1)
-        if enemy_bits <= 5:
+        if enemy_bits <= 8:
             scrambler_count = 0
-        elif enemy_bits <= 10:
+        elif enemy_bits <= 11:
             scrambler_count = 1
         elif enemy_bits <= 15:
             scrambler_count = 2
@@ -132,9 +134,9 @@ class AlgoStrategy(gamelib.AlgoCore):
             scrambler_count = 3
         for i in range(scrambler_count):
             if i % 2 == 0:
-                game_state.attempt_spawn(SCRAMBLER, [3, 10])
+                game_state.attempt_spawn(SCRAMBLER, [9, 4])
             else:
-                game_state.attempt_spawn(SCRAMBLER, [24, 10])
+                game_state.attempt_spawn(SCRAMBLER, [18, 4])
 
 
     # experiment
