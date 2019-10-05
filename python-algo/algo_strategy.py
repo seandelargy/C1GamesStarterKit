@@ -157,7 +157,7 @@ class AlgoStrategy(gamelib.AlgoCore):
     # basic updated raptor strategy
     def starter_strategy_defense(self, game_state):
 
-        filter_locations_urgent = [[0, 13], [1, 13], [2, 13], [25, 13], [26, 13], [27, 13], [[3, 13], [24, 13]]]
+        filter_locations_urgent = [[0, 13], [1, 13], [2, 13], [25, 13], [26, 13], [27, 13], [3, 13], [24, 13]]
 
         destructor_locations = [[4, 12], [23, 12], [5, 11], [22, 11], [6, 10],
                                       [21, 10], [7, 9], [20, 9], [8, 8], [19, 8], [9, 7], [10, 7], [11, 7],
