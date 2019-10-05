@@ -25,6 +25,8 @@ class AlgoStrategy(gamelib.AlgoCore):
         seed = random.randrange(maxsize)
         random.seed(seed)
         gamelib.debug_write('Random seed: {}'.format(seed))
+        self.my_health = 40
+        self.turns_to_not_send_scramblers = 0
 
     def on_game_start(self, config):
         """ 
@@ -117,11 +119,20 @@ class AlgoStrategy(gamelib.AlgoCore):
     # sends in attack from top left
     def attack_from_top_left(self, game_state, ping_count=1):
         for i in range(ping_count):
-            game_state.attempt_spawn(PING, [5, 8])
+            game_state.attempt_spawn(PING, [4, 9])
 
     # sends in scramblers to dispel opponent's attack
     def send_in_scramblers(self, game_state):
-        if game_state.turn_number <= 5:
+        change_in_health = self.my_health - game_state.my_health
+        self.my_health = game_state.my_health
+        if game_state.turn_number <= 5 or self.my_health > 30:
+            return
+        if change_in_health >= 8:
+            self.turns_to_not_send_scramblers = 2
+        elif change_in_health >= 13:
+            self.turns_to_not_send_scramblers = 3
+        if self.turns_to_not_send_scramblers > 0:
+            self.turns_to_not_send_scramblers -= 1
             return
         enemy_bits = game_state.get_resource(game_state.BITS, 1)
         if enemy_bits <= 8:
