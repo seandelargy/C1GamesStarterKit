@@ -181,18 +181,22 @@ class AlgoStrategy(gamelib.AlgoCore):
 
         filter_locations_urgent = [[0, 13], [1, 13], [2, 13], [25, 13], [26, 13], [27, 13], [3, 13], [24, 13]]
 
+        filter_locations_secondary = [[4, 13], [23, 13], [5, 12], [22, 12], [6, 11], [21, 11], [7, 10], [20, 10],
+                                      [8, 9], [19, 9], [9, 8], [18, 8], [10, 7], [17, 7], [11, 6], [16, 6], [12, 5],
+                                      [15, 5]]
+
+
         destructor_locations_wall = [[4, 12], [23, 12], [5, 11], [22, 11], [6, 10],
                                       [21, 10], [7, 9], [20, 9], [8, 8], [19, 8], [9, 7], [10, 7], [11, 7],
                                       [16, 7], [17, 7], [18, 7]]
 
         destructor_corner = [[3, 12], [24, 12], [25, 12], [1, 12], [2, 12], [26, 12], [2, 11], [3, 11], [24, 11], [25, 11]]
 
-        destructor_bottom = [[15, 6], [16, 6], [10, 6], [11, 6], [12, 6],  [17, 6], [11, 5], [12, 5], [15, 5], [16, 5]]
+        destructor_bottom = [[9, 6], [10, 6], [17, 6], [18, 6], [10, 5], [11, 5], [16, 5], [17, 5], [11, 4], [12, 4], [15, 4], [16, 4], [12, 3], [15, 3]]
+        destructor_bottom.reverse()
 
-        filter_locations_secondary = [[4, 13], [23, 13], [5, 12], [22, 12], [6, 11], [21, 11], [7, 10], [20, 10],
-                                      [8, 9], [19, 9], [9, 8], [18, 8], [10, 7], [17, 7]]
 
-        encrypter_locations = [[10, 5], [17, 5], [11, 4], [16, 4]]
+        encrypter_locations = [[6, 9], [21, 9], [7, 8], [20, 8], [8, 7], [19, 7]]
 
 
         # try to respawn these every time - want to replace
@@ -201,12 +205,14 @@ class AlgoStrategy(gamelib.AlgoCore):
 
         game_state.attempt_spawn(DESTRUCTOR, destructor_locations_wall)
 
+        game_state.attempt_spawn_limit(DESTRUCTOR, destructor_bottom, 6)
         game_state.attempt_spawn_limit(DESTRUCTOR, destructor_corner, 4)
-        game_state.attempt_spawn_limit(DESTRUCTOR, destructor_bottom, 4)
+
 
 
         # extra defense / attack helper
-        game_state.attempt_spawn_limit(ENCRYPTOR, encrypter_locations, 4)
+        if game_state.turn_number > 10:
+            game_state.attempt_spawn_limit(ENCRYPTOR, encrypter_locations, 2)
 
         game_state.attempt_spawn(DESTRUCTOR, destructor_bottom)
         game_state.attempt_spawn(DESTRUCTOR, destructor_corner)

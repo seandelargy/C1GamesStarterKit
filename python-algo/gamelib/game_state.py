@@ -366,7 +366,7 @@ class GameState:
             location = locations[i]
 
             # break here if reached max number to set
-            if i >= max_units_send:
+            if spawned_units >= max_units_send:
                 break
 
             for i in range(num):
