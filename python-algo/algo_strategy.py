@@ -143,12 +143,13 @@ class AlgoStrategy(gamelib.AlgoCore):
 
         encrypter_locations = [[4, 10], [23, 10], [5, 9], [22, 9], [6, 8], [21, 8], [7, 7], [20, 7], [8, 6], [19, 6]]
 
-        if game_state.turn_number <= 3:
-            game_state.attempt_spawn(FILTER, filter_locations_urgent)
-            game_state.attempt_spawn(DESTRUCTOR, destructor_locations)
-        else:
-            game_state.attempt_spawn_limit(ENCRYPTOR, encrypter_locations, 2)
-            game_state.attempt_spawn(FILTER, filter_locations_secondary)
+
+        # try to respawn these every time - want to replace
+        game_state.attempt_spawn(FILTER, filter_locations_urgent)
+        game_state.attempt_spawn(DESTRUCTOR, destructor_locations)
+
+        game_state.attempt_spawn_limit(ENCRYPTOR, encrypter_locations, 2)
+        game_state.attempt_spawn(FILTER, filter_locations_secondary)
 
 
 
