@@ -55,9 +55,9 @@ class AlgoStrategy(gamelib.AlgoCore):
         """
         game_state = gamelib.GameState(self.config, turn_state)
         gamelib.debug_write('Performing turn {} of your custom algo strategy'.format(game_state.turn_number))
-        game_state.suppress_warnings(True)  #Comment or remove this line to enable warnings.
+        #game_state.suppress_warnings(True)  #Comment or remove this line to enable warnings.
 
-        self.starter_strategy(game_state)
+        self.starter_strategy_defense(game_state)
 
         game_state.submit_turn()
 
@@ -69,6 +69,7 @@ class AlgoStrategy(gamelib.AlgoCore):
 
 
     def starter_strategy(self, game_state):
+        game_state.attempt_spawn(EMP, [24, 10], 3)
         """
         For defense we will use a spread out layout and some Scramblers early on.
         We will place destructors near locations the opponent managed to score on.
@@ -102,6 +103,69 @@ class AlgoStrategy(gamelib.AlgoCore):
                 # Lastly, if we have spare cores, let's build some Encryptors to boost our Pings' health.
                 encryptor_locations = [[13, 2], [14, 2], [13, 3], [14, 3]]
                 game_state.attempt_spawn(ENCRYPTOR, encryptor_locations)
+
+
+
+
+
+# -----------------------------------------------------------------------------------------------------------
+
+
+
+    # experiment
+    def starter_strategy_raptor_experiment(self, game_state):
+        filter_locations = [[0, 13], [1, 13], [2, 13], [25, 13], [26, 13], [27, 13], [3, 12], [24, 12], [4, 11],
+                            [23, 11], [5, 10], [22, 10], [6, 9], [21, 9], [7, 8], [20, 8], [8, 7], [19, 7], [9, 6],
+                            [10, 6], [11, 6], [16, 6], [17, 6], [18, 6]]
+
+        encrypter_locations = [[4, 10], [23, 10], [5, 9], [22, 9], [6, 8], [21, 8], [7, 7], [20, 7], [8, 6], [19, 6]]
+
+        if game_state.turn_number <= 2:
+             game_state.attempt_spawn(FILTER, filter_locations)
+        elif game_state.turn_number < 5:
+            game_state.attempt_spawn_limit(DESTRUCTOR, [[24,11]], 1)
+            game_state.attempt_spawn_limit(ENCRYPTOR, encrypter_locations, 2)
+            game_state.attempt_spawn(FILTER, filter_locations)
+
+
+    # basic updated raptor strategy
+    def starter_strategy_defense(self, game_state):
+
+        filter_locations_urgent = [[0, 13], [1, 13], [2, 13], [25, 13], [26, 13], [27, 13]]
+
+        filter_locations_secondary = [[3, 13], [24, 13], [4, 12], [23, 12], [5, 11], [22, 11], [6, 10],
+                                      [21, 10], [7, 9], [20, 9], [8, 8], [19, 8], [9, 7], [10, 7], [11, 7],
+                                      [16, 7], [17, 7], [18, 7]]
+
+        destructor_locations = [[3, 12], [24, 12], [4, 11],
+                                [23, 11], [5, 10], [22, 10], [6, 9], [21, 9], [7, 8], [20, 8], [8, 7], [19, 7], [9, 6],
+                                [10, 6], [11, 6], [16, 6], [17, 6], [18, 6]]
+
+        encrypter_locations = [[4, 10], [23, 10], [5, 9], [22, 9], [6, 8], [21, 8], [7, 7], [20, 7], [8, 6], [19, 6]]
+
+        if game_state.turn_number <= 3:
+            game_state.attempt_spawn(FILTER, filter_locations_urgent)
+            game_state.attempt_spawn(DESTRUCTOR, destructor_locations)
+        else:
+            game_state.attempt_spawn_limit(ENCRYPTOR, encrypter_locations, 2)
+            game_state.attempt_spawn(FILTER, filter_locations_secondary)
+
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------------------------------------------------------------------------
+
+    def replace_v_shape_defense(self, game_state):
+        test = 2
+        # while cores are above 5 maybe
+            # loop through list of filter locations map replacing missing filters
 
     def build_defences(self, game_state):
         """
@@ -158,7 +222,6 @@ class AlgoStrategy(gamelib.AlgoCore):
         """
         Build a line of the cheapest stationary unit so our EMP's can attack from long range.
         """
-        # test
         # First let's figure out the cheapest unit
         # We could just check the game rules, but this demonstrates how to use the GameUnit class
         stationary_units = [FILTER, DESTRUCTOR, ENCRYPTOR]

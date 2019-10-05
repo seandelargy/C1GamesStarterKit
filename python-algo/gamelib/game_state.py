@@ -300,6 +300,7 @@ class GameState:
                 (stationary or on_edge) and
                 (not stationary or num == 1))
 
+
     def attempt_spawn(self, unit_type, locations, num=1):
         """Attempts to spawn new units with the type given in the given locations.
 
@@ -323,6 +324,51 @@ class GameState:
             locations = [locations]
         spawned_units = 0
         for location in locations:
+            for i in range(num):
+                if self.can_spawn(unit_type, location, 1):
+                    x, y = map(int, location)
+                    cost = self.type_cost(unit_type)
+                    resource_type = self.__resource_required(unit_type)
+                    self.__set_resource(resource_type, 0 - cost)
+                    self.game_map.add_unit(unit_type, location, 0)
+                    if is_stationary(unit_type):
+                        self._build_stack.append((unit_type, x, y))
+                    else:
+                        self._deploy_stack.append((unit_type, x, y))
+                    spawned_units += 1
+        return spawned_units
+
+
+    # attempt
+    def attempt_spawn_limit(self, unit_type, locations, max_units_send, num=1):
+        """Attempts to spawn new units with the type given in the given locations.
+
+        Args:
+            * unit_type: The type of unit we want to spawn
+            * locations: A single location or list of locations to spawn units at
+            * num: The number of units of unit_type to deploy at the given location(s)
+
+        Returns:
+            The number of units successfully spawned
+
+        """
+        if unit_type not in ALL_UNITS:
+            self._invalid_unit(unit_type)
+            return
+        if num < 1:
+            self.warn("Attempted to spawn fewer than one units! ({})".format(num))
+            return
+
+        if type(locations[0]) == int:
+            locations = [locations]
+        spawned_units = 0
+        for i in range(len(locations)):
+            location = locations[i]
+
+            # break here if reached max number to set
+            if i >= max_units_send:
+                break
+
             for i in range(num):
                 if self.can_spawn(unit_type, location, 1):
                     x, y = map(int, location)
